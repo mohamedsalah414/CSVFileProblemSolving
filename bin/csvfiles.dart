@@ -11,11 +11,11 @@ void main() {
   final lines = File(inputFile).readAsLinesSync();
 
   for (final line in lines) {
-    final columns = line.split('\t');
+    final columns = line.split(',');
 
-    final product = columns[2];
+    final product = columns[2].trim();
     final quantity = double.parse(columns[3]);
-    final brand = columns[4];
+    final brand = columns[4].trim();
 
     orders.putIfAbsent(product, () => <double>[]).add(quantity);
 
@@ -28,12 +28,15 @@ void main() {
   final output1 = File(inputFile1).openWrite();
 
   orders.forEach((product, quantities) {
-    final averageQuantity =
-        quantities.reduce((a, b) => a + b) / quantities.length;
+    // it calculates the average quantity by using the reduce method to sum up the quantities and dividing by the length of the list.
+    final sumQuantity = quantities.reduce((a, b) => a + b);
+    final averageQuantity = sumQuantity / quantities.length;
     output0.write('$product,$averageQuantity\n');
   });
 
   brands.forEach((product, brandCounts) {
+    // It finds the most popular brand by using the reduce method on the entries of the nested map.
+    // It compares the values of each entry and returns the one with the higher value.
     final mostPopularBrand =
         brandCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
     output1.write('$product,$mostPopularBrand\n');
